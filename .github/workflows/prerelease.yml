@@ -12,12 +12,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-latest, windows-latest]
+        os: [windows-latest]
     runs-on: ${{matrix.os}}
 
     steps:
       - name: init
-        uses: actions/checkout@v1
+        uses: actions/checkout@v4
 
       - name: set node
         uses: actions/setup-node@v2
@@ -44,13 +44,6 @@ jobs:
         if: startsWith(matrix.os, 'windows')
         run: npm run app:windows
 
-      - name: mac
-        if: startsWith(matrix.os, 'macOS')
-        run: |
-          npm run build:prod
-          npm run mac:dmg
-          npm run mac:mas
-
       - name: get package
         id: package
         uses: Ireoo/get-package@v1
@@ -59,7 +52,7 @@ jobs:
           key: version
 
       - name: Prerelease
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{steps.package.outputs.version}}-alpha
           name: v${{steps.package.outputs.version}}-alpha
